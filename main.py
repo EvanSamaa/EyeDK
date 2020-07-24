@@ -19,7 +19,33 @@ import numpy as np
 import os
 import tensorflow as tf
 from utils import *
+import pickle as pkl
+
 
 if __name__ == "__main__":
     setup_logger()
+    video_path = "data/street cam.mp4"
+    model_path = "model/model_final_721ade (1).pkl"
+    config_path = "configs/COCO-Detection/faster_rcnn_R_50_C4_3x.yaml"
+    num_frames = 300
+
+    # video_to_frames(video_path, num_frames)
+
+    # loading model and config from the downloaded files
+    cfg = get_cfg()
+    cfg.merge_from_file(config_path)
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
+    cfg.MODEL.WEIGHTS = model_path
+    cfg.MODEL.DEVICE = "cpu"
+    predictor = DefaultPredictor(cfg)
+    img = cv2.imread("frames/0.png")
+
+    # pass to the model
+    outputs = predictor(img)['instances']
+    coord = outputs["pred_boxes"]
+    # Use `Visualizer` to draw the predictions on the image.
+    v = Visualizer(img[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]), scale=1.2)
+    v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+    plt.imshow(v.get_image())
+    plt.show()
 

@@ -15,7 +15,6 @@ def mid_point(img, person, idx):
     _ = cv2.circle(img, mid, 5, (255, 0, 0), -1)
     cv2.putText(img, str(idx), mid, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
     return mid
-
 ################################ Scipy functions ################################
 def compute_distance(midpoints,num):
   dist = np.zeros((num,num))
@@ -25,7 +24,6 @@ def compute_distance(midpoints,num):
         dst = distance.euclidean(midpoints[i], midpoints[j])
         dist[i][j]=dst
   return dist
-
 def find_closest(dist,num,thresh):
   p1=[]
   p2=[]
@@ -37,7 +35,6 @@ def find_closest(dist,num,thresh):
         p2.append(j)
         d.append(dist[i][j])
   return p1,p2,d
-
 def change_2_red(img,person,p1,p2):
   risky = np.unique(p1+p2)
   points = []
@@ -46,3 +43,24 @@ def change_2_red(img,person,p1,p2):
     _ = cv2.rectangle(img, (x1, y1), (x2, y2), (0,0,255), 2)
     points.append((int((x1+x2)/2), int(y2)))
   return img, points
+################################ Video/image processing functions ################################
+def video_to_frames(video_path, num_frames):
+    cap = cv2.VideoCapture(video_path)
+    cnt = 0
+    if (cap.isOpened() == False):
+        print("Error opening video stream or file")
+
+    ret, first_frame = cap.read()
+    while (cap.isOpened()):
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        if ret == True:
+            # save each frame to folder
+            img = 'frames/' + str(cnt) + '.png'
+            cv2.imwrite(img, frame)
+            cnt = cnt + 1
+            if (cnt == num_frames):
+                break
+        # Break the loop
+        else:
+            break
