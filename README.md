@@ -2,6 +2,9 @@
 
 ## Resources
 ### Object Detection Models Review
+[Responding to the Controversy about YOLOv5](https://blog.roboflow.ai/yolov4-versus-yolov5/)
+This post compare between YOLO4 & YOLO5 performace on inference speed, model size and accuracy. Since paper for YOLO5 is not found, may be a good source for identifying YOLO5 performance in all
+
 [Object Detection and Tracking in 2020](https://blog.netcetera.com/object-detection-and-tracking-in-2020-f10fb6ff9af3)
 
 YOLO vs R-CNN/Fast R-CNN/Faster R-CNN is more of an apples to apples comparison (YOLO is an object detector, and Mask R-CNN is for object detection+segmentation).
