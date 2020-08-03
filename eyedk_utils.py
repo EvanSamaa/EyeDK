@@ -65,10 +65,12 @@ def video_to_frames(video_path, num_frames):
         else:
             break
 def detect_with_yolo():
+    out = 'yolo_output/'
+    source = 'frames/'
+
+
     weights = ['weights\yolov5l.pt']
     save_txt = True
-    out = 'yolo_output/'
-    source = './inference/images/'
     view_img = False
     save_txt = True
     imgsz = 640
