@@ -1,6 +1,7 @@
 from scipy.spatial import distance
 from detect import detect
 import torch as torch
+import imageio
 ################################ open cv functions ################################
 def mid_point(img, person, idx):
     # get the coordinates
@@ -81,5 +82,16 @@ def detect_with_yolo():
     with torch.no_grad():
         if True:
             detect(out, source, weights, view_img, save_txt, imgsz)
+def generate_video(image_path, num=300):
+    # image_path should be where the images are stored, images must have the format of
+    # i.png with i being a number, image_path must end with a / for easy of string
+    # operations
+    imgs = []
+    img_name_template = image_path + "{}.png"
+    for i in range(num):
+        imgs.append(imageio.imread(img_name_template.format(i)))
+    imageio.mimsave(image_path + "0movie.gif", imgs)
+def
 if __name__ == "__main__":
-    detect_with_yolo()
+    generate_video("yolo_output/")
+    # detect_with_yolo()
