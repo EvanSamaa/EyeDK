@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # loading model and config from the downloaded files
     cfg = get_cfg()
     cfg.merge_from_file(config_path)
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.89
     cfg.MODEL.WEIGHTS = model_path
     cfg.MODEL.DEVICE = "cpu"
     predictor = DefaultPredictor(cfg)
