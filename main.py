@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 import os
 import tensorflow as tf
-from utils import *
+from eyedk_utils import *
 import pickle as pkl
 
 
