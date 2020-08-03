@@ -2,6 +2,7 @@ from scipy.spatial import distance
 from detect import detect
 import torch as torch
 import imageio
+import json
 ################################ open cv functions ################################
 def mid_point(img, person, idx):
     # get the coordinates
@@ -65,12 +66,8 @@ def video_to_frames(video_path, num_frames):
         # Break the loop
         else:
             break
-def detect_with_yolo():
-    out = 'yolo_output/'
-    source = 'frames/'
-
-
-    weights = ['weights\yolov5l.pt']
+def detect_with_yolo(out = 'yolo_output/', source = 'frames/'):
+    weights = ['weights/yolov5l.pt']
     save_txt = True
     view_img = False
     save_txt = True
@@ -91,7 +88,6 @@ def generate_video(image_path, num=300):
     for i in range(num):
         imgs.append(imageio.imread(img_name_template.format(i)))
     imageio.mimsave(image_path + "0movie.gif", imgs)
-def
 if __name__ == "__main__":
+    detect_with_yolo()
     generate_video("yolo_output/")
-    # detect_with_yolo()

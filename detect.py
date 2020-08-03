@@ -4,7 +4,7 @@ import platform
 import shutil
 import time
 from pathlib import Path
-
+import json
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
@@ -17,6 +17,7 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 
 def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, device = 'cpu'):
+    output_dict = {}
     out, source, weights, view_img, save_txt, imgsz = \
         out, source, weights, view_img, save_txt, imgsz
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
@@ -60,6 +61,7 @@ def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, devi
     img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
     _ = model(img.half() if half else img) if device.type != 'cpu' else None  # run once
     for path, img, im0s, vid_cap in dataset:
+        per_img_dict = {}
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -69,7 +71,6 @@ def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, devi
         # Inference
         t1 = time_synchronized()
         pred = model(img, augment=False)[0]
-
         # Apply NMS
         pred = non_max_suppression(pred, 0.4, 0.5, classes=0, agnostic=None)
         t2 = time_synchronized()
@@ -77,8 +78,12 @@ def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, devi
         # Apply Classifier
         if classify:
             pred = apply_classifier(pred, modelc, img, im0s)
-
-        # Process detections
+        per_img_dict["location_x"] = pred[0][:, :4].numpy().tolist()
+        per_img_dict["confidence"] = pred[0][:, 4].numpy().tolist()
+        per_img_dict["category"] = pred[0][:, 5].numpy().tolist()
+        output_dict[path] = per_img_dict
+        with open(out + 'json_out.txt', 'w') as outfile:
+            json.dump(output_dict, outfile)
         for i, det in enumerate(pred):  # detections per image
             if webcam:  # batch_size >= 1
                 p, s, im0 = path[i], '%g: ' % i, im0s[i].copy()
