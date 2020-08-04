@@ -3,6 +3,9 @@ from detect import detect
 import torch as torch
 import imageio
 import json
+import cv2
+import numpy as np
+
 ################################ open cv functions ################################
 def mid_point(img, person, idx):
     # get the coordinates
@@ -46,7 +49,7 @@ def change_2_red(img,person,p1,p2):
     points.append((int((x1+x2)/2), int(y2)))
   return img, points
 ################################ Video/image processing functions ################################
-def video_to_frames(video_path, num_frames):
+def video_to_frames(video_path, num_frames, temp_dir="frames/"):
     cap = cv2.VideoCapture(video_path)
     cnt = 0
     if (cap.isOpened() == False):
@@ -58,7 +61,7 @@ def video_to_frames(video_path, num_frames):
         ret, frame = cap.read()
         if ret == True:
             # save each frame to folder
-            img = 'frames/' + str(cnt) + '.png'
+            img = temp_dir + str(cnt) + '.png'
             cv2.imwrite(img, frame)
             cnt = cnt + 1
             if (cnt == num_frames):
@@ -66,6 +69,7 @@ def video_to_frames(video_path, num_frames):
         # Break the loop
         else:
             break
+    return cnt
             
 def load_json(file_path):
     with open(file_path) as json_file:

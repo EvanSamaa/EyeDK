@@ -9,7 +9,7 @@ import cv2
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
-
+import numpy as np
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import check_img_size, non_max_suppression, apply_classifier, scale_coords, xyxy2xywh, plot_one_box
@@ -78,7 +78,8 @@ def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, devi
         # Apply Classifier
         if classify:
             pred = apply_classifier(pred, modelc, img, im0s)
-        per_img_dict["location_x"] = pred[0][:, :4].numpy().tolist()
+        to_ratio = np.array([img.shape[3], img.shape[2], img.shape[3], img.shape[2]])
+        per_img_dict["location_x"] = (pred[0][:, :4].numpy() / to_ratio).tolist()
         per_img_dict["confidence"] = pred[0][:, 4].numpy().tolist()
         per_img_dict["category"] = pred[0][:, 5].numpy().tolist()
         output_dict[path] = per_img_dict

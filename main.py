@@ -20,7 +20,11 @@ import os
 import tensorflow as tf
 from eyedk_utils import *
 import pickle as pkl
+def run_pipline(video_path):
+    temp_dir = "temp_dir/"
+    num_frames = 300
 
+    cnt = video_to_frames(video_pathm, num_frames, temp_dir)
 
 if __name__ == "__main__":
     setup_logger()
@@ -30,11 +34,10 @@ if __name__ == "__main__":
     num_frames = 300
 
     # video_to_frames(video_path, num_frames)
-
     # loading model and config from the downloaded files
     cfg = get_cfg()
     cfg.merge_from_file(config_path)
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.89
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
     cfg.MODEL.WEIGHTS = model_path
     cfg.MODEL.DEVICE = "cpu"
     predictor = DefaultPredictor(cfg)
