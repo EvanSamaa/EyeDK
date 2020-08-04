@@ -5,6 +5,7 @@ import imageio
 import json
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 ################################ open cv functions ################################
 def mid_point(img, person, idx):
@@ -98,6 +99,87 @@ def generate_video(image_path, num=300):
     for i in range(num):
         imgs.append(imageio.imread(img_name_template.format(i)))
     imageio.mimsave(image_path + "0movie.gif", imgs)
+
+#----------------------------------- Birds Eye View -------------------------------------------
+def read_dict():
+    with open('yolo_output/json_out.txt', 'r') as inf:
+        dict = eval(inf.read())
+        return dict
+
+def helper(dict):
+    for frame in dict:
+        boxes = dict[frame]["location_x"]
+        scores = dict[frame]["confidence"]
+        classes = dict[frame]["category"]
+        img = cv2.imread(frame)
+        height, width, _ = img.shape
+
+        array_boxes_detected = get_human_box_detection(boxes, scores, classes, height, width)
+
+        img = cv2.imread(frame)
+        draw(img, array_boxes_detected[2])
+
+        array_centroids, array_groundpoints = get_centroids_and_groundpoints(array_boxes_detected)
+        print(array_centroids)
+        print(array_groundpoints)
+        break
+
+def get_human_box_detection(boxes,scores,classes,width,height):
+    """ 
+	For each object detected, check if it is a human and if the confidence >> our threshold.
+	Return 2 coordonates necessary to build the box.
+	@ boxes : all our boxes coordinates
+	@ scores : confidence score on how good the prediction is -> between 0 & 1
+	@ classes : the class of the detected object ( 1 for human )
+	@ height : of the image -> to get the real pixel value
+	@ width : of the image -> to get the real pixel value
+	"""
+    array_boxes = list() # Create an empty list
+    for i in range(len(boxes)):
+        # If the class of the detected object is person and the confidence of the prediction is > 0.8
+        if classes[i] == 0.0 and scores[i] > 0.80:
+            # Multiply the X coordonnate by the height of the image and the Y coordonate by the width
+		    # To transform the box value into pixel coordonate values.
+            box = [boxes[i][0],boxes[i][1],boxes[i][2],boxes[i][3]] * np.array([height, width, height, width])
+            # Add the results converted to int
+            array_boxes.append([int(box[0]),int(box[1]),int(box[2]),int(box[3])])
+    return array_boxes
+
+def get_centroids_and_groundpoints(array_boxes_detected):
+    """
+	For every bounding box, compute the centroid and the point located on the bottom center of the box
+	@ array_boxes_detected : list containing all our bounding boxes 
+	"""
+    array_centroids, array_groundpoints = [],[] # Initialize empty centroid and ground point lists
+    for index, box in enumerate(array_boxes_detected):
+        centroid, ground_point = get_points_from_box(box)
+        array_centroids.append(centroid)
+        array_groundpoints.append(ground_point)
+    return array_centroids, array_groundpoints
+
+def get_points_from_box(box):
+    """
+	Get the center of the bounding and the point "on the ground"
+	@ param = box : 2 points representing the bounding box
+	@ return = centroid (x1,y1) and ground point (x2,y2)
+	"""
+    # Center of the box x = (x1+x2)/2 et y = (y1+y2)/2
+    center_x = int(((box[1]+box[3])/2))
+    center_y = int(((box[0]+box[2])/2))
+    center_y_ground = center_y + ((box[2] - box[0])/2)
+    return (center_x, center_y),(center_x, int(center_y_ground))
+
+def draw(img, corners):
+    cv2.circle(img, (corners[1], corners[0]), 20, (0, 0, 255), 2)
+    cv2.circle(img, (corners[3], corners[2]), 20, (0, 255, 0), 2)
+    plt.imshow(img)
+    plt.show()
+
 if __name__ == "__main__":
-    detect_with_yolo()
-    generate_video("yolo_output/")
+    # detect_with_yolo()
+    # generate_video("yolo_output/")
+
+    dict = read_dict()
+    print(dict["/Users/victorzhang/Desktop/EyeDK/frames/102.png"]["location_x"][0])
+
+    helper(dict)

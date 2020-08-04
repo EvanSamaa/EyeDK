@@ -20,11 +20,12 @@ import os
 import tensorflow as tf
 from eyedk_utils import *
 import pickle as pkl
+
 def run_pipline(video_path):
     temp_dir = "temp_dir/"
     num_frames = 300
 
-    cnt = video_to_frames(video_pathm, num_frames, temp_dir)
+    cnt = video_to_frames(video_path, num_frames, temp_dir)
 
 if __name__ == "__main__":
     setup_logger()
