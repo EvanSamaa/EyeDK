@@ -66,6 +66,12 @@ def video_to_frames(video_path, num_frames):
         # Break the loop
         else:
             break
+            
+def load_json(file_path):
+    with open(file_path) as json_file:
+        data = json.load(json_file)
+    return data
+
 def detect_with_yolo(out = 'yolo_output/', source = 'frames/'):
     weights = ['weights/yolov5l.pt']
     save_txt = True
