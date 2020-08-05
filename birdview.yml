@@ -1,0 +1,17 @@
+image_parameters:
+  height_og: 1280
+  img_path: /Users/victorzhang/Desktop/EyeDK/frames/1.png
+  p1:
+  - 127
+  - 201
+  p2:
+  - 627
+  - 126
+  p3:
+  - 497
+  - 647
+  p4:
+  - 1275
+  - 450
+  size_frame: 720
+  width_og: 720
