@@ -106,46 +106,56 @@ def generate_video(image_path, num=300):
     imageio.mimsave(image_path + "0movie.gif", imgs)
 
 #----------------------------------- Birds Eye View -------------------------------------------
-def read_dict():
-    with open('yolo_output/json_out.txt', 'r') as inf:
+def read_dict(file_path='yolo_output/json_out.txt'):
+    with open(file_path, 'r') as inf:
         dict = eval(inf.read())
         return dict
-
-def helper(dict, matrix, imgOutput, thresh=100):
-    for frame in dict:
+def distance_metric_evaluation(dict, matrix, imgOutput, thresh=100, mode = "Euclidean", save_video = True):
+    process_out_path = "temp_dir_distance/"
+    process_in_path = "temp_dir/"
+    divider = "\\" # swap this for "/" for mac
+    for item in os.listdir(process_out_path):
+        os.remove(process_out_path + item)
+    for i in range(len(dict)):
+        frame_name = (list(dict.keys())[0]).split(divider)
+        frame_name[-1] = "{}.png".format(i)
+        saved_path_list = frame_name.copy()
+        saved_path_list[-2] = process_out_path[:-1]
+        frame = frame_name[0]
+        saved_path = frame_name[0]
+        for j in range(1, len(frame_name)):
+            frame = frame + "\\" + frame_name[j]
+            saved_path = saved_path + "\\" + saved_path_list[j]
+        # string parsing
         boxes = dict[frame]["location_x"]
         scores = dict[frame]["confidence"]
         classes = dict[frame]["category"]
         img = cv2.imread(frame)
         height, width, _ = img.shape
-
         array_boxes_detected = get_human_box_detection(boxes, scores, classes, height, width)   # all human boxes in 1 frame
-        print(array_boxes_detected)
-
         img = cv2.imread(frame)
-        copy = img.copy()
-        draw(copy, array_boxes_detected[0])
-        draw(copy, array_boxes_detected[1])
-        plt.imshow(copy)
-        plt.show()
-
         array_centroids, array_groundpoints = get_centroids_and_groundpoints(array_boxes_detected)  # 1 gound point for each box
-        print(array_centroids)
-        print(array_groundpoints)
-
-        transformed_midpoints = compute_point_perspective_transformation(matrix, array_groundpoints) # transformed bottom centre points
-        print(transformed_midpoints)
-
-        cv2.circle(imgOutput, (int(transformed_midpoints[0][0]), int(transformed_midpoints[0][1])), 20, (0, 0, 255), -1)
-        cv2.circle(imgOutput, (int(transformed_midpoints[1][0]), int(transformed_midpoints[1][1])), 20, (0, 255, 0), -1)
-        plt.imshow(imgOutput)
-        plt.show()
-
-        dist = compute_distance(transformed_midpoints, len(transformed_midpoints))      # computing euclidean between every pair of centre points
-        p1, p2, d = find_closest(dist, len(transformed_midpoints), thresh)
-        img, points = change_2_red(img, array_boxes_detected, p1, p2)
-
-        break
+        points = []
+        if mode == "Euclidean":
+            dist = compute_distance(array_groundpoints, len(array_groundpoints))
+            p1, p2, d = find_closest(dist, len(array_groundpoints), thresh)
+            for i in range(len(array_boxes_detected)):
+                x1, y1, x2, y2 = array_boxes_detected[i]
+                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 5)
+                points.append((int((x1 + x2) / 2), int(y2)))
+            change_2_red(img, array_boxes_detected, p1, p2)
+            cv2.imwrite(saved_path, img)
+        elif mode == "BirdEye":
+            transformed_midpoints = compute_point_perspective_transformation(matrix, array_groundpoints) # transformed bottom centre points
+            dist = compute_distance(transformed_midpoints, len(transformed_midpoints))      # computing euclidean between every pair of centre points
+            p1, p2, d = find_closest(dist, len(transformed_midpoints), thresh)
+            for i in range(len(array_boxes_detected)):
+                x1, y1, x2, y2 = array_boxes_detected[i]
+                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 5)
+                points.append((int((x1 + x2) / 2), int(y2)))
+            change_2_red(img, array_boxes_detected, p1, p2)
+            cv2.imwrite(saved_path, img)
+            # img, points = change_2_red(img, array_boxes_detected, p1, p2)
     return
 
 def change_2_red(img,array_boxes_detected,p1,p2):
@@ -155,8 +165,6 @@ def change_2_red(img,array_boxes_detected,p1,p2):
     x1,y1,x2,y2 = array_boxes_detected[i]
     cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,255), 5)
     points.append((int((x1+x2)/2), int(y2)))
-  plt.imshow(img)
-  plt.show()
   return img, points
 
 def compute_distance(midpoints,num):
@@ -182,8 +190,7 @@ def find_closest(dist,num,thresh):
 
 list_points = list()
 
-def find_matrix():
-     img_path = "/Users/victorzhang/Desktop/EyeDK/frames/1.png"
+def find_matrix(img_path = "/Users/victorzhang/Desktop/EyeDK/frames/1.png"):
      img = cv2.imread(img_path)
      width, height, _ = img.shape
      windowName = 'MouseCallback'
@@ -280,7 +287,7 @@ def get_human_box_detection(boxes,scores,classes,width,height):
     array_boxes = list() # Create an empty list
     for i in range(len(boxes)):
         # If the class of the detected object is person and the confidence of the prediction is > 0.8
-        if classes[i] == 0.0 and scores[i] > 0.80:
+        if classes[i] == 0.0 and scores[i] > 0.4:
             # Multiply the X coordonnate by the height of the image and the Y coordonate by the width
 		    # To transform the box value into pixel coordonate values.
             box = [boxes[i][0],boxes[i][1],boxes[i][2],boxes[i][3]] * np.array([height, width, height, width])
@@ -299,7 +306,6 @@ def get_centroids_and_groundpoints(array_boxes_detected):
         array_centroids.append(centroid)
         array_groundpoints.append(ground_point)
     return array_centroids, array_groundpoints
-
 def get_points_from_box(box):
     """
 	Get the center of the bounding and the point "on the ground"
@@ -307,24 +313,23 @@ def get_points_from_box(box):
 	@ return = centroid (x1,y1) and ground point (x2,y2)
 	"""
     # Center of the box x = (x1+x2)/2 et y = (y1+y2)/2
+    # center_x = int(((box[1]+box[3])/2))
+    # center_y = int(((box[0]+box[2])/2))
+    # center_y_ground = center_y + ((box[2] - box[0])/2)
+    # return (center_x, center_y),(center_x, int(center_y_ground))
     center_x = int(((box[0]+box[2])/2)) #top left -> bottom right corner (bottom right has higher values)
     center_y = int(((box[1]+box[3])/2))
     center_y_ground = center_y + ((box[2] - box[0])/2) # box[2] or box[1] - whichever is bottom
     return (center_x, center_y), (center_x, int(box[3]))  # prev was int(center_y_ground), box[0]
-
 def draw(img, corners):
-    cv2.circle(img, (corners[0], corners[1]), 40, (0, 0, 255), 2)
-    cv2.circle(img, (corners[2], corners[3]), 40, (0, 255, 0), 2)
+    cv2.circle(img, (int((corners[0] + corners[2])/2), corners[3]), 15, (0, 255, 0), -1)
 
 if __name__ == "__main__":
     # detect_with_yolo()
     # generate_video("yolo_output/")
-
-    json_dict = read_dict()
+    json_dict = read_dict("temp_dir_out/json_out.txt")
     #print(dict["/Users/victorzhang/Desktop/EyeDK/frames/102.png"]["location_x"][0])
 
-    matrix, imgOutput = find_matrix()
-    plt.imshow(imgOutput)
-    plt.show()
-
-    helper(json_dict, matrix, imgOutput)
+    matrix, imgOutput = find_matrix("temp_dir/0.png")
+    # bottom right clockwise
+    distance_metric_evaluation(json_dict, matrix, imgOutput)

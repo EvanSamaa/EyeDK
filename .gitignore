@@ -138,4 +138,6 @@ dmypy.json
 cython_debug/
 *.mp4
 *(1).pkl
-/yolo_output
+temp_dir/
+temp_dir_distance/
+temp_dir_out/
