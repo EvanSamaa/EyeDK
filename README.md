@@ -33,4 +33,7 @@ This post details the *bird's view conversion process* in detection, which uses 
 
 [Robust lane finding techniques using computer vision — Python & Open CV](https://medium.com/@vamsiramakrishnan/robust-lane-finding-using-python-open-cv-63eb66fa2616)
 
-[A Geometric Approach to Obtain a Bird’s Eye View from an Image]()
+[A Geometric Approach to Obtain a Bird’s Eye View from an Image](https://www.groundai.com/project/a-geometric-approach-to-obtain-a-birds-eye-view-from-an-image/1)
+
+### Benchmark Dataset
+[Multi-camera pedestrians video](https://www.epfl.ch/labs/cvlab/data/data-pom-index-php/)
