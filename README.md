@@ -40,4 +40,4 @@ This post details the *bird's view conversion process* in detection, which uses 
 
 [Caltech Pedestrian Detection Benchmark](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/)
 
-[JAAD Dataset](http://data.nvision2.eecs.yorku.ca/JAAD_dataset/)
+[Joint Attention in Autonomous Driving JAAD Dataset](http://data.nvision2.eecs.yorku.ca/JAAD_dataset/) (Using)
