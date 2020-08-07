@@ -21,9 +21,15 @@ def run_pipline(video_path):
     temp_dir = "temp_dir/" # the raw frames of the video will be stored here
     temp_dir_out = "temp_dir_out/" # the frames processed by yolo would be stored here
     process_out_path = "temp_dir_distance/" # the frame processed by the distance measuring algorithm would be stored here
+    try:
+        os.mkdir(temp_dir)
+        os.mkdir(temp_dir_out)
+        os.mkdir(process_out_path)
+    except:
+        print("folders already exist")
     for item in os.listdir(temp_dir):
         os.remove(temp_dir + item)
-    num_frames = 2000
+    num_frames = 10
     # convert the video to frames
     cnt = video_to_frames(video_path, num_frames, temp_dir)
     print("frame conversion completed")
