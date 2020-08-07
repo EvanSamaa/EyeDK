@@ -1,17 +1,17 @@
 image_parameters:
-  height_og: 1280
-  img_path: /Users/victorzhang/Desktop/EyeDK/frames/1.png
+  height_og: 1920
+  img_path: temp_dir/0.png
   p1:
-  - 127
-  - 201
+  - 1165
+  - 148
   p2:
-  - 627
-  - 126
+  - 1621
+  - 237
   p3:
-  - 497
-  - 647
+  - 154
+  - 733
   p4:
-  - 1275
-  - 450
-  size_frame: 720
-  width_og: 720
+  - 946
+  - 942
+  size_frame: 1080
+  width_og: 1080

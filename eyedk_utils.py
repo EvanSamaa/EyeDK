@@ -661,21 +661,20 @@ def distance_metric_evaluation(dict, matrix, imgOutput, thresh=100, mode="Euclid
         mode (str, optional): distance measuring metrics. Defaults to "Euclidean".
         save_video (bool, optional): If save to video. Defaults to True.
     """
-    process_out_path = "temp_dir_distance/"
+    temp_dir_distance = "temp_dir_distance/"
     process_in_path = "temp_dir/"
     divider = "\\"  # swap this for "/" for mac
-    for item in os.listdir(process_out_path):
-        os.remove(process_out_path + item)
+    for item in os.listdir(temp_dir_distance):
+        os.remove(temp_dir_distance + item)
     for i in range(len(dict)):
         frame_name = (list(dict.keys())[0]).split(divider)
         frame_name[-1] = "{}.png".format(i)
         saved_path_list = frame_name.copy()
-        saved_path_list[-2] = process_out_path[:-1]
+        saved_path_list[-2] = temp_dir_distance[:-1]
         frame = frame_name[0]
         saved_path = frame_name[0]
         for j in range(1, len(frame_name)):
             frame = frame + divider + frame_name[j]
-            saved_path = saved_path + divider + saved_path_list[j]
             saved_path = saved_path + divider + saved_path_list[j]
         # string parsing
         boxes = dict[frame]["location_x"]
@@ -734,8 +733,8 @@ def compute_distance(midpoints, num):
                 dist[i][j] = dst
     return dist
 
-    list_points = list()
 
+list_points = list()
 
 def find_matrix(img_path="/Users/victorzhang/Desktop/EyeDK/frames/1.png"):
     """Find warping 2D matrix for each frame
