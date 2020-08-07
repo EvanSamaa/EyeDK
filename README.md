@@ -2,7 +2,7 @@
 
 ## Demo
 
-![VOLOv5](https://i.imgur.com/cS7Fqci.gif)
+![VOLOv5](https://i.imgur.com/wcOoHxE.gif)
 
 Detection on custom dataset with heatmap
 
