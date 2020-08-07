@@ -7,6 +7,14 @@
 Detection on custom dataset with heatmap
 
 ## Code Setup
+To run the pipeline, simply use "pip install -r requirement.txt" tp install all dependencies, then run run_pipline() in main.py with the path to a video as the input
+to run. 
+
+  run_pipline(video_path) 
+  
+The output of the pipline can be found in the ./temp_dir_distance/0movie.gif file. By default the pipline would process 10000 frames of the input video, however for faster testing, this can be set to 10 for example. The pipeline also uses the birdeye view distance as the distance metric by default, for this reason, 4 points need to be selected manually when the code begins running to compute a homgraphy matrix. It can be changed to Euclidean distance by modifying the argument like so:
+
+  run_pipline(video_path, detection_mode = "Euclidean")
 
 ## Model Benchmark Test
 ### Colab Notebooks
