@@ -1,24 +1,21 @@
 # You may need to restart your runtime prior to this, to let your installation take effect
+
 # Some basic setup:
 # Setup detectron2 logger
 from detectron2.utils.logger import setup_logger
 # import some common libraries
+
 import numpy as np
 import cv2
 import random
 import matplotlib.pyplot as plt
-# import some common detectron2 utilities
-# from detectron2 import model_zoo
-# from detectron2.engine import DefaultPredictor
-# from detectron2.config import get_cfg
-# from detectron2.utils.visualizer import Visualizer
-# from detectron2.data import MetadataCatalog
 import pandas as pd
 import numpy as np
 import os
-# import tensorflow as tf
-from eyedk_utils import *
 import pickle as pkl
+
+# import utility function
+from eyedk_utils import *
 
 def run_pipline(video_path):
     temp_dir = "temp_dir/" # the raw frames of the video will be stored here
@@ -39,11 +36,11 @@ def run_pipline(video_path):
     generate_video(temp_dir_out, cnt)
     print("detection video generated")
     json_dict = read_dict("temp_dir_out/json_out.txt")
-    # print(dict["/Users/victorzhang/Desktop/EyeDK/frames/102.png"]["location_x"][0])
     distance_metric_evaluation(json_dict, matrix, imgOutput, mode="BirdEye")
     generate_video(process_out_path, cnt)
 
 if __name__ == "__main__":
+    # Run on video
     run_pipline("data/videoplayback.mp4")
 
     setup_logger()
@@ -52,7 +49,6 @@ if __name__ == "__main__":
     config_path = "configs/COCO-Detection/faster_rcnn_R_50_C4_3x.yaml"
     num_frames = 300
 
-    # video_to_frames(video_path, num_frames)
     # loading model and config from the downloaded files
     cfg = get_cfg()
     cfg.merge_from_file(config_path)
@@ -60,6 +56,7 @@ if __name__ == "__main__":
     cfg.MODEL.WEIGHTS = model_path
     cfg.MODEL.DEVICE = "cpu"
     predictor = DefaultPredictor(cfg)
+    # Demo on first frame
     img = cv2.imread("frames/0.png")
 
     # pass to the model

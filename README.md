@@ -1,6 +1,34 @@
 # EyeDK
 
-## Resources
+## Demo
+![VOLOv5](https://i.imgur.com/kKUOVqR.gif)
+Detection on custom dataset with heatmap
+
+
+## Model Benchmark Test
+### Colab Notebooks
+[YOLOv5 baseline model benchmark](https://colab.research.google.com/drive/1DH1l-Dfnnta0Lb58YEc_PgAs0kwXP5zy?usp=sharing)
+
+[Detectron2 baseline mode benchmark](https://colab.research.google.com/drive/1Mvs5pGpYEKoq2EHxQS8eJlJdgRlqSNPb?usp=sharing)
+
+### Benchmark Dataset
+[Multi-camera pedestrians video](https://www.epfl.ch/labs/cvlab/data/data-pom-index-php/) (Using)
+
+[Caltech Pedestrian Detection Benchmark](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/)
+
+[Joint Attention in Autonomous Driving JAAD Dataset](http://data.nvision2.eecs.yorku.ca/JAAD_dataset/) (Using)
+
+### Benchmark Results
+**EPFL dataset video 4p-c0**
+
+*For VOLOv5*
+![VOLOv5](https://i.imgur.com/nuWIslz.gif)
+
+*For Detectron2*
+![Detectron2](https://i.imgur.com/YeRtNxh.gif)
+
+
+## Literature Resources
 ### Object Detection Models Review
 [Responding to the Controversy about YOLOv5](https://blog.roboflow.ai/yolov4-versus-yolov5/)
 This post compare between YOLO4 & YOLO5 performace on inference speed, model size and accuracy. Since paper for YOLO5 is not found, may be a good source for identifying YOLO5 performance in all
@@ -35,9 +63,4 @@ This post details the *bird's view conversion process* in detection, which uses 
 
 [A Geometric Approach to Obtain a Bird’s Eye View from an Image](https://www.groundai.com/project/a-geometric-approach-to-obtain-a-birds-eye-view-from-an-image/1)
 
-### Benchmark Dataset
-[Multi-camera pedestrians video](https://www.epfl.ch/labs/cvlab/data/data-pom-index-php/) (Using)
 
-[Caltech Pedestrian Detection Benchmark](http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/)
-
-[Joint Attention in Autonomous Driving JAAD Dataset](http://data.nvision2.eecs.yorku.ca/JAAD_dataset/) (Using)

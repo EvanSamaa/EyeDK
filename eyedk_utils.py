@@ -12,8 +12,22 @@ import os
 import re
 from PIL import Image
 
+    """This code snippet is where all the utility function resides
+       Inspired by source https://www.analyticsvidhya.com/blog/2020/05/social-distancing-detection-tool-deep-learning/
+    """
+
 ################################ open cv functions ################################
 def mid_point(img, person, idx):
+    """Find mid point in bounding box info
+
+    Args:
+        img (np.array): image to br processed
+        person ([]): list of all bounding box information
+        idx (int): index for person to be processed
+
+    Returns:
+        [()]: coordinated for person mid point: (x, y)
+    """
     # get the coordinates
     x1, y1, x2, y2 = person[idx]
     _ = cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
@@ -27,15 +41,18 @@ def mid_point(img, person, idx):
     cv2.putText(img, str(idx), mid, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
     return mid
 ################################ Scipy functions ################################
-def compute_distance(midpoints,num):
-  dist = np.zeros((num,num))
-  for i in range(num):
-    for j in range(i+1,num):
-      if i!=j:
-        dst = distance.euclidean(midpoints[i], midpoints[j])
-        dist[i][j]=dst
-  return dist
+
 def find_closest(dist,num,thresh):
+    """Find if there are points that smaller that thres/people violates social distance rule
+
+    Args:
+        dist ([[]]): 2-D map for distance, from compute_distance()
+        num (int): number of points in total
+        thresh (float): threshold for distance
+
+    Returns:
+        p1, p2, d: points that violates the role and their coordinates
+    """
   p1=[]
   p2=[]
   d=[]
@@ -46,7 +63,19 @@ def find_closest(dist,num,thresh):
         p2.append(j)
         d.append(dist[i][j])
   return p1,p2,d
+
 def change_2_red(img,person,p1,p2):
+    """Change person bounding box to red
+
+    Args:
+        img ([[]]): image array
+        person ([]): person who violates the rule
+        p1 ([]): person points coordinates
+        p2 ([]): [person points coordinates
+
+    Returns:
+        img, points: image that processed, and associated coordinates
+    """
   risky = np.unique(p1+p2)
   points = []
   for i in risky:
@@ -56,6 +85,16 @@ def change_2_red(img,person,p1,p2):
   return img, points
 ################################ Video/image processing functions ################################
 def video_to_frames(video_path, num_frames, temp_dir="frames/"):
+    """Parsing video to frames
+
+    Args:
+        video_path (str): video path
+        num_frames (int): number of frames parsing to 
+        temp_dir (str, optional): dir to save to. Defaults to "frames/".
+
+    Returns:
+        int: number of frames truly parsed
+    """
     cap = cv2.VideoCapture(video_path)
     cnt = 0
     if (cap.isOpened() == False):
@@ -78,11 +117,25 @@ def video_to_frames(video_path, num_frames, temp_dir="frames/"):
     return cnt
             
 def load_json(file_path):
+    """Loading json file
+
+    Args:
+        file_path (str): file path
+
+    Returns:
+        [obj]: data object
+    """
     with open(file_path) as json_file:
         data = json.load(json_file)
     return data
 
 def detect_with_yolo(out = 'yolo_output/', source = 'frames/'):
+    """YOLO5 premeter preset
+
+    Args:
+        out (str, optional): output source file. Defaults to 'yolo_output/'.
+        source (str, optional): input source file. Defaults to 'frames/'.
+    """
     weights = ['weights/yolov5l.pt']
     save_txt = True
     view_img = False
@@ -96,6 +149,12 @@ def detect_with_yolo(out = 'yolo_output/', source = 'frames/'):
         if True:
             detect(out, source, weights, view_img, save_txt, imgsz)
 def generate_video(image_path, num=300):
+    """Convert all frames to video
+
+    Args:
+        image_path (str): frame path
+        num (int, optional): number of images selected. Defaults to 300.
+    """
     # image_path should be where the images are stored, images must have the format of
     # i.png with i being a number, image_path must end with a / for easy of string
     # operations
@@ -106,11 +165,32 @@ def generate_video(image_path, num=300):
     imageio.mimsave(image_path + "0movie.gif", imgs)
 
 #----------------------------------- Birds Eye View -------------------------------------------
+    """Inspired by blog: https://towardsdatascience.com/a-social-distancing-detector-using-a-tensorflow-object-detection-model-python-and-opencv-4450a431238
+    """
 def read_dict(file_path='yolo_output/json_out.txt'):
+    """read dictionary type data
+
+    Args:
+        file_path (str, optional): file path. Defaults to 'yolo_output/json_out.txt'.
+
+    Returns:
+        dict: data read
+    """
     with open(file_path, 'r') as inf:
         dict = eval(inf.read())
         return dict
+    
 def distance_metric_evaluation(dict, matrix, imgOutput, thresh=100, mode = "Euclidean", save_video = True):
+    """evaluate distances from frames
+
+    Args:
+        dict (dict): data
+        matrix ([np.array]): warping 2D matrix
+        imgOutput (str): image outputs
+        thresh (int, optional): threshold for distance. Defaults to 100.
+        mode (str, optional): distance measuring metrics. Defaults to "Euclidean".
+        save_video (bool, optional): If save to video. Defaults to True.
+    """
     process_out_path = "temp_dir_distance/"
     process_in_path = "temp_dir/"
     divider = "\\" # swap this for "/" for mac
@@ -158,16 +238,17 @@ def distance_metric_evaluation(dict, matrix, imgOutput, thresh=100, mode = "Eucl
             # img, points = change_2_red(img, array_boxes_detected, p1, p2)
     return
 
-def change_2_red(img,array_boxes_detected,p1,p2):
-  risky = np.unique(p1+p2)
-  points = []
-  for i in risky:
-    x1,y1,x2,y2 = array_boxes_detected[i]
-    cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,255), 5)
-    points.append((int((x1+x2)/2), int(y2)))
-  return img, points
 
 def compute_distance(midpoints,num):
+    """Compute distance in between with brute-force
+
+    Args:
+        midpoints ([]): array of all midpoints for person
+        num (int): number of persons
+
+    Returns:
+        [[]]: 2D array for all distanced
+    """
   dist = np.zeros((num,num))
   for i in range(num):
     for j in range(i+1,num):
@@ -176,21 +257,18 @@ def compute_distance(midpoints,num):
         dist[i][j]=dst
   return dist
 
-def find_closest(dist,num,thresh):
-  p1=[]
-  p2=[]
-  d=[]
-  for i in range(num):
-    for j in range(i,num):
-      if( (i!=j) & (dist[i][j]<=thresh)):
-        p1.append(i)
-        p2.append(j)
-        d.append(dist[i][j])
-  return p1,p2,d
 
 list_points = list()
 
 def find_matrix(img_path = "/Users/victorzhang/Desktop/EyeDK/frames/1.png"):
+    """Find warping 2D matrix for each frame
+
+    Args:
+        img_path (str, optional): frame path. Defaults to "/Users/victorzhang/Desktop/EyeDK/frames/1.png".
+
+    Returns:
+        matrix, image: waarping matrix and output image
+    """
      img = cv2.imread(img_path)
      width, height, _ = img.shape
      windowName = 'MouseCallback'
@@ -321,7 +399,14 @@ def get_points_from_box(box):
     center_y = int(((box[1]+box[3])/2))
     center_y_ground = center_y + ((box[2] - box[0])/2) # box[2] or box[1] - whichever is bottom
     return (center_x, center_y), (center_x, int(box[3]))  # prev was int(center_y_ground), box[0]
+
 def draw(img, corners):
+    """Draw corners of bounding boxs
+
+    Args:
+        img (np.array): 2D images
+        corners ([]): corner points
+    """
     cv2.circle(img, (int((corners[0] + corners[2])/2), corners[3]), 15, (0, 255, 0), -1)
 
 if __name__ == "__main__":

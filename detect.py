@@ -17,6 +17,22 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 
 def detect(out, source, weights, view_img, save_txt, imgsz, save_img=False, device = 'cpu'):
+    """Detection function for YOLOv5, inspired by YOLOv5 detect.py
+       see source: https://github.com/ultralytics/yolov5/blob/master/detect.py
+
+    Args:
+        out (str): output dir, default: inference/output
+        source (str): source to be inferenced, default: inference/images
+        weights (str): pretained weight source, 'yolov5s.pt', 'yolov5m.pt', 'yolov5l.pt', 'yolov5x.pt'; default: 'yolov5s.pt'
+        view_img (bool): if display image inferenced, default: False
+        save_txt (bool): if save results to txt file, default: False
+        imgsz (int): image size, default: 640
+        save_img (bool, optional): if save image to output. Defaults to False.
+        device (str, optional): cuda device, o, or o,1,2,3 or cpu. Defaults to 'cpu'.
+
+    Raises:
+        StopIteration: [description]
+    """
     output_dict = {}
     out, source, weights, view_img, save_txt, imgsz = \
         out, source, weights, view_img, save_txt, imgsz
