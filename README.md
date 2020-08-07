@@ -2,8 +2,10 @@
 
 ## Demo
 ![VOLOv5](https://i.imgur.com/kKUOVqR.gif)
+
 Detection on custom dataset with heatmap
 
+## Code Setup
 
 ## Model Benchmark Test
 ### Colab Notebooks
@@ -22,9 +24,11 @@ Detection on custom dataset with heatmap
 **EPFL dataset video 4p-c0**
 
 *For VOLOv5*
+
 ![VOLOv5](https://i.imgur.com/nuWIslz.gif)
 
 *For Detectron2*
+
 ![Detectron2](https://i.imgur.com/YeRtNxh.gif)
 
 
