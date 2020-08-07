@@ -29,7 +29,7 @@ def run_pipline(video_path):
         print("folders already exist")
     for item in os.listdir(temp_dir):
         os.remove(temp_dir + item)
-    num_frames = 10
+    num_frames = 2000
     # convert the video to frames
     cnt = video_to_frames(video_path, num_frames, temp_dir)
     print("frame conversion completed")
