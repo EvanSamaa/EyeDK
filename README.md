@@ -11,6 +11,7 @@ To run the pipeline, simply use "pip install -r requirement.txt" tp install all 
 to run. 
 
   run_pipline(video_path) 
+  
 The output of the pipline can be found in the ./temp_dir_distance/0movie.gif file. By default the pipline would process 10000 frames of the input video, however for faster testing, this can be set to 10 for example. The pipeline also uses the birdeye view distance as the distance metric by default, for this reason, 4 points need to be selected manually when the code begins running to compute a homgraphy matrix. It can be changed to Euclidean distance by modifying the argument like so:
 
   run_pipline(video_path, detection_mode = "Euclidean")
