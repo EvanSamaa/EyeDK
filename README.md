@@ -7,6 +7,9 @@
 Detection on custom dataset with heatmap
 
 ## Code Setup
+To run the pipline, simply use "pip install -r requirement.txt" tp install all dependencies, then run run_pipline() in main.py with the path to a video as the input
+to run the pipline. The output of the pipline can be found in the ./temp_dir_distance/ folder names
+
 
 ## Model Benchmark Test
 ### Colab Notebooks
