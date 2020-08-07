@@ -136,7 +136,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-*.mp4
 *(1).pkl
 temp_dir/
 temp_dir_distance/
